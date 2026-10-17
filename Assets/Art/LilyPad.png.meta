@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2227ff2f3968c4ba7bfcb9eb71d230bd
+guid: 59137d700ba1c46efae1503d9e6d4ad7
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -103,10 +103,10 @@ TextureImporter:
       name: LilyPad.png_0
       rect:
         serializedVersion: 2
-        x: 8
-        y: 1
-        width: 15
-        height: 16
+        x: 1
+        y: 9
+        width: 16
+        height: 15
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

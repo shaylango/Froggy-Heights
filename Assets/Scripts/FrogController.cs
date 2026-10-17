@@ -8,12 +8,14 @@ public class FrogController : MonoBehaviour
     private Rigidbody2D frogBody;
     private Animator frogAnimator;
 
+    // find the frog's physics body and animation controller
     private void Awake()
     {
         frogBody = GetComponent<Rigidbody2D>();
         frogAnimator = GetComponent<Animator>();
     }
 
+    // reads movement input and applies horicontal movement
     private void Update()
     {
         float horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -47,26 +49,38 @@ public class FrogController : MonoBehaviour
         transform.position = position;
     }
 
+    // bounces when frog lands on top of platform and side collisions are ignored to avoid getting stuck
     private void OnCollisionEnter2D(Collision2D collision) {
         if (!collision.collider.CompareTag("Platform")) {
             return;
             }
-            if (frogBody.linearVelocity.y <= 0.1f) {
-                if (frogAnimator != null) {
-                    frogAnimator.Play("FrogIdle", 0, 0f);
-                    }
-                    frogBody.linearVelocity = new Vector2(
-                        frogBody.linearVelocity.x,
-                        jumpForce
-                    );
-                    
-                    CancelInvoke(nameof(PlayJumpAnimation));
-                    Invoke(nameof(PlayJumpAnimation), 0.08f);
+            bool landedOnTop = false;
+            
+            for (int i = 0; i < collision.contactCount; i++) {
+                ContactPoint2D contact = collision.GetContact(i);
+                if (contact.normal.y > 0.5f) {
+                    landedOnTop = true;
+                    break;
                     }
                 }
-                private void PlayJumpAnimation() {
-                    if (frogAnimator != null) {
-                        frogAnimator.Play("FrogJump", 0, 0f);
+                if (!landedOnTop || frogBody.linearVelocity.y > 0.1f) {
+                    return;
                     }
-                }
-            }
+                    if (frogAnimator != null)
+                    {
+                        frogAnimator.Play("FrogIdle", 0, 0f);
+                        }
+                        frogBody.linearVelocity = new Vector2(
+                            frogBody.linearVelocity.x,
+                            jumpForce
+                            );
+                            CancelInvoke(nameof(PlayJumpAnimation));
+                            Invoke(nameof(PlayJumpAnimation), 0.08f);
+                            }
+                        // switches the frog to its jump animation after leaving platform
+                        private void PlayJumpAnimation() {
+                                if (frogAnimator != null) {
+                                    frogAnimator.Play("FrogJump", 0, 0f);
+                                    }
+                                }
+}
