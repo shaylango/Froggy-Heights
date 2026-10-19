@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1979620386598448260}
   - component: {fileID: 3130660041348035742}
   - component: {fileID: 3357282313334364515}
+  - component: {fileID: 7945825987483038830}
   m_Layer: 0
   m_Name: MovingPlatformPrefab
   m_TagString: Platform
@@ -159,3 +160,17 @@ PlatformEffector2D:
   m_UseSideFriction: 0
   m_UseSideBounce: 0
   m_SideArc: 1
+--- !u!114 &7945825987483038830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6159938656277392447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13d821a6af1174440aa914d732d5cf62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
+  moveDistance: 2
+  moveSpeed: 1.5
