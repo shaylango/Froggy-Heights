@@ -3,20 +3,24 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    // The frog being watched for falling.
+    // the frog being watched for falling
     [SerializeField] private Transform frog;
 
-    // The message shown after the frog loses.
+    // the message shown after the frog loses
     [SerializeField] private GameObject gameOverText;
 
-    // How far below the camera the frog can fall.
+    // how far below the camera the frog can fall
     [SerializeField] private float fallDistance = 6f;
 
+    [SerializeField] private AudioClip gameOverSound;
+
     private bool gameOver;
+    private AudioSource gameManagerAudioSource;
 
     private void Start()
     {
         gameOverText.SetActive(false);
+        gameManagerAudioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -33,10 +37,13 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // End the game when the frog falls below the camera.
+        // end the game when the frog falls below the camera
         if (frog.position.y < Camera.main.transform.position.y - fallDistance)
         {
             EndGame();
+            if (gameManagerAudioSource != null && gameOverSound != null) {
+                gameManagerAudioSource.PlayOneShot(gameOverSound);
+            }
         }
     }
 

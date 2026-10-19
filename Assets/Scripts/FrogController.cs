@@ -4,15 +4,18 @@ public class FrogController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5.5f;
     [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private AudioClip jumpSound;
 
     private Rigidbody2D frogBody;
     private Animator frogAnimator;
+    private AudioSource frogAudioSource;
 
     // find the frog's physics body and animation controller
     private void Awake()
     {
         frogBody = GetComponent<Rigidbody2D>();
         frogAnimator = GetComponent<Animator>();
+        frogAudioSource = GetComponent<AudioSource>();
     }
 
     // reads movement input and applies horicontal movement
@@ -74,6 +77,9 @@ public class FrogController : MonoBehaviour
                             frogBody.linearVelocity.x,
                             jumpForce
                             );
+                            if (frogAudioSource != null && jumpSound != null) {
+                                frogAudioSource.PlayOneShot(jumpSound);
+                                }
                             CancelInvoke(nameof(PlayJumpAnimation));
                             Invoke(nameof(PlayJumpAnimation), 0.08f);
                             }
