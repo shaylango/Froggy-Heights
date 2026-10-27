@@ -3,31 +3,34 @@ using UnityEngine;
 
 public class HeightScore : MonoBehaviour
 {
-    // the frog whose highest height is being tracked
+    // the frog whose height is tracked
     [SerializeField] private Transform frog;
 
-    // UI text that displays the score
+    // UI text displaying the score
     [SerializeField] private TMP_Text heightText;
 
-    // stores the frog's highest recorded position
+    [SerializeField] private TMP_Text bestScoreText;
+
     private float highestY;
-
-    // stores the frog's starting height
     private float startingY;
-
-    // stores points collected from flies
     private int flyPoints;
+    private int bestScore;
+
+    private const string BestScoreKey = "FroggyHeightsBestScore";
 
     private void Start()
     {
         startingY = frog.position.y;
         highestY = startingY;
+
+        bestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
+
         UpdateScoreDisplay();
     }
 
     private void Update()
     {
-        // only increase the height score when the frog reaches a new height
+        // updates the height score when the frog reaches a new height
         if (frog.position.y > highestY)
         {
             highestY = frog.position.y;
@@ -42,15 +45,32 @@ public class HeightScore : MonoBehaviour
         UpdateScoreDisplay();
     }
 
-    // updates the UI with height and fly points
+    // updates and saves the current best score
     private void UpdateScoreDisplay()
     {
         int heightScore = Mathf.FloorToInt(
             (highestY - startingY) * 10f
         );
 
+        int totalScore = heightScore + flyPoints;
+
+        if (totalScore > bestScore)
+        {
+            bestScore = totalScore;
+
+            PlayerPrefs.SetInt(
+                BestScoreKey,
+                bestScore
+            );
+
+            PlayerPrefs.Save();
+        }
+
         heightText.text =
             "Height: " + heightScore +
-            "\nFlies: " + flyPoints;
+            "\nFlies: " + flyPoints +
+            "\nScore: " + totalScore;
+
+        bestScoreText.text = "High Score: " + bestScore;
     }
 }

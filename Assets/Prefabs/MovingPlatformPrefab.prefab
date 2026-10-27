@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 8959216545669649094, guid: 59137d700ba1c46efae1503d9e6d4ad7, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8212898, g: 0.3066038, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -172,5 +172,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13d821a6af1174440aa914d732d5cf62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
-  moveDistance: 2
+  leftLimit: -7
+  rightLimit: 7
   moveSpeed: 1.5

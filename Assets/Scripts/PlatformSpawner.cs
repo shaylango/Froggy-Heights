@@ -39,6 +39,16 @@ public class PlatformSpawner : MonoBehaviour
     // height above the starting area where moving platforms begin
     [SerializeField] private float movingPlatformsStartHeight = 8f;
 
+    // optional prefab used for sinking lily pads
+    [SerializeField] private GameObject sinkingPlatformPrefab;
+
+    // chance that a generated platform will sink
+    [SerializeField, Range(0f, 1f)]
+    private float sinkingPlatformChance = 0.2f;
+
+    // height above the starting area where sinking pads can appear
+    [SerializeField] private float sinkingPlatformsStartHeight = 8f;
+
     private float highestSpawnedY;
 
     private void Start()
@@ -88,9 +98,22 @@ public class PlatformSpawner : MonoBehaviour
 
         GameObject prefabToSpawn = platformPrefab;
 
-        if (movingPlatformPrefab != null &&
-            highestSpawnedY >= startingHeight + movingPlatformsStartHeight &&
-            Random.value < movingPlatformChance) {
+        bool canUseSinkingPlatforms =
+            highestSpawnedY >= startingHeight + sinkingPlatformsStartHeight;
+
+        bool canUseMovingPlatforms =
+            highestSpawnedY >= startingHeight + movingPlatformsStartHeight;
+
+        if (canUseSinkingPlatforms &&
+            sinkingPlatformPrefab != null &&
+            Random.value < sinkingPlatformChance)
+        {
+            prefabToSpawn = sinkingPlatformPrefab;
+        }
+        else if (canUseMovingPlatforms &&
+            movingPlatformPrefab != null &&
+            Random.value < movingPlatformChance)
+        {
             prefabToSpawn = movingPlatformPrefab;
         }
 
@@ -102,6 +125,7 @@ public class PlatformSpawner : MonoBehaviour
 
         spawnedPlatforms.Add(newPlatform);
     }
+
     // removes generated platforms that are far below the camera
     private void RemoveOldPlatforms() {
         float cutoffY = Camera.main.transform.position.y
