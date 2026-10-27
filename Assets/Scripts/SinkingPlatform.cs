@@ -12,6 +12,10 @@ public class SinkingPlatform : MonoBehaviour
     // how far the platform moves downward
     [SerializeField] private float sinkDistance = 1.2f;
 
+    [SerializeField] private AudioClip sinkingSound;
+    [SerializeField, Range(0f, 1f)] private float sinkingVolume = 0.7f;
+
+    private AudioSource platformAudioSource;
     private Collider2D platformCollider;
     private SpriteRenderer platformRenderer;
     private bool isSinking;
@@ -19,6 +23,7 @@ public class SinkingPlatform : MonoBehaviour
     private void Awake() {
         platformCollider = GetComponent<Collider2D>();
         platformRenderer = GetComponent<SpriteRenderer>();
+        platformAudioSource = GetComponent<AudioSource>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
@@ -50,6 +55,14 @@ public class SinkingPlatform : MonoBehaviour
 
     private IEnumerator SinkPlatform() {
         isSinking = true;
+
+    if (platformAudioSource != null && sinkingSound != null)
+    {
+        platformAudioSource.PlayOneShot(
+            sinkingSound,
+            sinkingVolume
+        );
+    }
 
         yield return new WaitForSeconds(sinkDelay);
 

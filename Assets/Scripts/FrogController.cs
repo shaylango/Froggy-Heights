@@ -6,6 +6,9 @@ public class FrogController : MonoBehaviour
     [SerializeField] private float moveSpeed = 5.5f;
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip tongueSound;
+    [SerializeField, Range(0f, 1f)]
+    private float tongueVolume = 0.4f;
     [SerializeField] private float tongueRange = 3f;
     private Transform tongueVisual;
     private SpriteRenderer tongueRenderer;
@@ -175,6 +178,14 @@ public class FrogController : MonoBehaviour
         );
 
         tongueVisual.gameObject.SetActive(true);
+
+        if (frogAudioSource != null && tongueSound != null)
+        {
+            frogAudioSource.PlayOneShot(
+                tongueSound,
+                tongueVolume
+            );
+        }
 
         yield return new WaitForSeconds(0.12f);
 

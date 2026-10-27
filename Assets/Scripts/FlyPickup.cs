@@ -2,10 +2,22 @@ using UnityEngine;
 
 public class FlyPickup : MonoBehaviour
 {
-    // points awarded when the frog collects this fly
+    // points awarded when the frog collects this flyp
     [SerializeField] private int pointValue = 10;
 
+    // sound played when the fly is collected
+    [SerializeField] private AudioClip collectionSound;
+
+    [SerializeField, Range(0f, 1f)]
+    private float collectionVolume = 0.8f;
+
+    private AudioSource flyAudioSource;
     private bool collected;
+
+    private void Awake()
+    {
+        flyAudioSource = GetComponent<AudioSource>();
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -33,6 +45,33 @@ public class FlyPickup : MonoBehaviour
             score.AddPoints(pointValue);
         }
 
-        Destroy(gameObject);
+        if (flyAudioSource != null && collectionSound != null)
+        {
+            Collider2D flyCollider = GetComponent<Collider2D>();
+
+            if (flyCollider != null)
+            {
+                flyCollider.enabled = false;
+            }
+
+            SpriteRenderer flyRenderer =
+                GetComponent<SpriteRenderer>();
+
+            if (flyRenderer != null)
+            {
+                flyRenderer.enabled = false;
+            }
+
+            flyAudioSource.PlayOneShot(
+                collectionSound,
+                collectionVolume
+            );
+
+            Destroy(gameObject, collectionSound.length);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }
