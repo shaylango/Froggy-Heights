@@ -61,4 +61,21 @@ public class GameManager : MonoBehaviour
         frog.gameObject.SetActive(false);
         gameOverText.SetActive(true);
     }
+
+    public void TriggerHazardGameOver() {
+        if (gameOver)
+        {
+        return;
+        }
+
+        EndGame();
+
+        if (gameManagerAudioSource != null &&
+            gameOverSound != null)
+        {
+            gameManagerAudioSource.PlayOneShot(
+                gameOverSound
+            );
+        }
+    }
 }

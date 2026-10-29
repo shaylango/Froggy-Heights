@@ -15,6 +15,7 @@ public class FrogController : MonoBehaviour
     private Rigidbody2D frogBody;
     private Animator frogAnimator;
     private AudioSource frogAudioSource;
+    private float lastBounceTime = -1f;
 
     // finds the frog's physics body, animator, audio source, and tongue
     private void Awake() {
@@ -66,27 +67,43 @@ public class FrogController : MonoBehaviour
     }
 
     // bounces when the frog lands on top of a platform
-    private void OnCollisionEnter2D(Collision2D collision) {
-        if (!collision.collider.CompareTag("Platform")) {
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (!collision.collider.CompareTag("Platform"))
+        {
             return;
         }
 
-        bool landedOnTop = false;
-
-        for (int i = 0; i < collision.contactCount; i++) {
-            ContactPoint2D contact = collision.GetContact(i);
-
-            if (contact.normal.y > 0.5f) {
-                landedOnTop = true;
-                break;
-            }
-        }
-
-        if (!landedOnTop || frogBody.linearVelocity.y > 0.1f) {
+        if (Time.time - lastBounceTime < 0.15f)
+        {
             return;
         }
 
-        if (frogAnimator != null) {
+        if (frogBody.linearVelocity.y > 0.1f)
+        {
+            return;
+        }
+
+        Collider2D frogCollider = GetComponent<Collider2D>();
+
+        if (frogCollider == null)
+        {
+            return;
+        }
+
+        float frogBottom = frogCollider.bounds.min.y;
+        float platformTop = collision.collider.bounds.max.y;
+
+        // ignore side contact, the frog must be standing on the top
+        if (frogBottom < platformTop - 0.15f)
+        {
+            return;
+        }
+
+        lastBounceTime = Time.time;
+
+        if (frogAnimator != null)
+        {
             frogAnimator.Play("FrogIdle", 0, 0f);
         }
 
@@ -95,7 +112,8 @@ public class FrogController : MonoBehaviour
             jumpForce
         );
 
-        if (frogAudioSource != null && jumpSound != null) {
+        if (frogAudioSource != null && jumpSound != null)
+        {
             frogAudioSource.PlayOneShot(jumpSound);
         }
 
