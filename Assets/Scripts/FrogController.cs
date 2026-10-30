@@ -3,43 +3,68 @@ using UnityEngine;
 
 public class FrogController : MonoBehaviour
 {
+    // controls the frog's horizontal movement
     [SerializeField] private float moveSpeed = 5.5f;
+
+    // controls the frog's automatic bounce height
     [SerializeField] private float jumpForce = 10f;
+
+    // sound played when the frog bounces
     [SerializeField] private AudioClip jumpSound;
+
+    // sound played when the frog uses its tongue
     [SerializeField] private AudioClip tongueSound;
+
     [SerializeField, Range(0f, 1f)]
     private float tongueVolume = 0.4f;
+
+    // maximum distance the tongue can reach
     [SerializeField] private float tongueRange = 3f;
+
     private Transform tongueVisual;
     private SpriteRenderer tongueRenderer;
     private Rigidbody2D frogBody;
+    private Collider2D frogCollider;
     private Animator frogAnimator;
     private AudioSource frogAudioSource;
+
+    // prevents multiple bounces from one landing
     private float lastBounceTime = -1f;
 
-    // finds the frog's physics body, animator, audio source, and tongue
-    private void Awake() {
+    // finds the frog's components and tongue visual
+    private void Awake()
+    {
         frogBody = GetComponent<Rigidbody2D>();
+        frogCollider = GetComponent<Collider2D>();
         frogAnimator = GetComponent<Animator>();
         frogAudioSource = GetComponent<AudioSource>();
-        tongueVisual = transform.Find("TongueVisual");
 
-        if (tongueVisual != null) {
-            tongueRenderer = tongueVisual.GetComponent<SpriteRenderer>();
+        tongueVisual =
+            transform.Find("TongueVisual");
+
+        if (tongueVisual != null)
+        {
+            tongueRenderer =
+                tongueVisual.GetComponent<SpriteRenderer>();
+
             tongueVisual.gameObject.SetActive(false);
         }
     }
 
     // reads movement input and applies horizontal movement
-    private void Update() {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
+    private void Update()
+    {
+        float horizontalInput =
+            Input.GetAxisRaw("Horizontal");
 
         if (Input.GetKey(KeyCode.A) ||
-            Input.GetKey(KeyCode.LeftArrow)) {
+            Input.GetKey(KeyCode.LeftArrow))
+        {
             horizontalInput = -1f;
         }
         else if (Input.GetKey(KeyCode.D) ||
-                 Input.GetKey(KeyCode.RightArrow)) {
+                 Input.GetKey(KeyCode.RightArrow))
+        {
             horizontalInput = 1f;
         }
 
@@ -51,17 +76,20 @@ public class FrogController : MonoBehaviour
         // wraps the frog around the sides of the screen
         Vector3 position = transform.position;
 
-        if (position.x > 8f) {
+        if (position.x > 8f)
+        {
             position.x = -8f;
         }
-        else if (position.x < -8f) {
+        else if (position.x < -8f)
+        {
             position.x = 8f;
         }
 
         transform.position = position;
 
         // uses the tongue when Space is pressed
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
             TryUseTongue();
         }
     }
@@ -84,17 +112,18 @@ public class FrogController : MonoBehaviour
             return;
         }
 
-        Collider2D frogCollider = GetComponent<Collider2D>();
-
         if (frogCollider == null)
         {
             return;
         }
 
-        float frogBottom = frogCollider.bounds.min.y;
-        float platformTop = collision.collider.bounds.max.y;
+        float frogBottom =
+            frogCollider.bounds.min.y;
 
-        // ignore side contact, the frog must be standing on the top
+        float platformTop =
+            collision.collider.bounds.max.y;
+
+        // ignores side contact and checks for a top landing
         if (frogBottom < platformTop - 0.15f)
         {
             return;
@@ -104,7 +133,11 @@ public class FrogController : MonoBehaviour
 
         if (frogAnimator != null)
         {
-            frogAnimator.Play("FrogIdle", 0, 0f);
+            frogAnimator.Play(
+                "FrogIdle",
+                0,
+                0f
+            );
         }
 
         frogBody.linearVelocity = new Vector2(
@@ -112,24 +145,38 @@ public class FrogController : MonoBehaviour
             jumpForce
         );
 
-        if (frogAudioSource != null && jumpSound != null)
+        if (frogAudioSource != null &&
+            jumpSound != null)
         {
-            frogAudioSource.PlayOneShot(jumpSound);
+            frogAudioSource.PlayOneShot(
+                jumpSound
+            );
         }
 
         CancelInvoke(nameof(PlayJumpAnimation));
-        Invoke(nameof(PlayJumpAnimation), 0.08f);
+
+        Invoke(
+            nameof(PlayJumpAnimation),
+            0.08f
+        );
     }
 
     // switches the frog to its jump animation
-    private void PlayJumpAnimation() {
-        if (frogAnimator != null) {
-            frogAnimator.Play("FrogJump", 0, 0f);
+    private void PlayJumpAnimation()
+    {
+        if (frogAnimator != null)
+        {
+            frogAnimator.Play(
+                "FrogJump",
+                0,
+                0f
+            );
         }
     }
 
     // finds the closest fly within tongue range
-    private void TryUseTongue() {
+    private void TryUseTongue()
+    {
         Collider2D[] nearbyObjects =
             Physics2D.OverlapCircleAll(
                 transform.position,
@@ -139,11 +186,13 @@ public class FrogController : MonoBehaviour
         FlyPickup closestFly = null;
         float closestDistance = Mathf.Infinity;
 
-        foreach (Collider2D nearbyObject in nearbyObjects) {
+        foreach (Collider2D nearbyObject in nearbyObjects)
+        {
             FlyPickup fly =
                 nearbyObject.GetComponent<FlyPickup>();
 
-            if (fly == null) {
+            if (fly == null)
+            {
                 continue;
             }
 
@@ -152,39 +201,55 @@ public class FrogController : MonoBehaviour
                 fly.transform.position
             );
 
-            if (distance < closestDistance) {
+            if (distance < closestDistance)
+            {
                 closestDistance = distance;
                 closestFly = fly;
             }
         }
 
-        if (closestFly != null) {
-            StartCoroutine(UseTongue(closestFly));
+        if (closestFly != null)
+        {
+            StartCoroutine(
+                UseTongue(closestFly)
+            );
         }
     }
 
-    // displays the tongue briefly between the frog and the fly
-    private IEnumerator UseTongue(FlyPickup fly) {
+    // displays the tongue between the frog and the fly
+    private IEnumerator UseTongue(FlyPickup fly)
+    {
         if (tongueVisual == null ||
             tongueRenderer == null ||
-            tongueRenderer.sprite == null) {
+            tongueRenderer.sprite == null)
+        {
             fly.Collect();
             yield break;
         }
 
-        Vector3 startPosition = tongueVisual.position;
-        Vector3 endPosition = fly.transform.position;
+        Vector3 startPosition =
+            tongueVisual.position;
 
-        Vector2 direction = endPosition - startPosition;
+        Vector3 endPosition =
+            fly.transform.position;
+
+        Vector2 direction =
+            endPosition - startPosition;
+
         float distance = Mathf.Min(
-        direction.magnitude,
-        tongueRange
+            direction.magnitude,
+            tongueRange
         );
 
-        tongueVisual.position = startPosition;
-        tongueVisual.right = direction.normalized;
+        tongueVisual.position =
+            startPosition;
 
-        tongueVisual.localScale = Vector3.one;
+        tongueVisual.right =
+            direction.normalized;
+
+        tongueVisual.localScale =
+            Vector3.one;
+
         float parentScale = Mathf.Max(
             tongueVisual.lossyScale.x,
             0.001f
@@ -197,7 +262,8 @@ public class FrogController : MonoBehaviour
 
         tongueVisual.gameObject.SetActive(true);
 
-        if (frogAudioSource != null && tongueSound != null)
+        if (frogAudioSource != null &&
+            tongueSound != null)
         {
             frogAudioSource.PlayOneShot(
                 tongueSound,

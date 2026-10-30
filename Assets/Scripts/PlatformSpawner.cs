@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class PlatformSpawner : MonoBehaviour
 {
-    // prefab used to create new lily pads
+    // prefab used to create regular lily pads
     [SerializeField] private GameObject platformPrefab;
 
-    // optional prefab used for moving lily pads
+    // optional prefab used to create moving lily pads
     [SerializeField] private GameObject movingPlatformPrefab;
 
     // chance that a generated platform will move
     [SerializeField, Range(0f, 1f)]
     private float movingPlatformChance = 0.25f;
 
-    // the frog determines when more platforms are needed
+    // frog used to determine when more platforms are needed
     [SerializeField] private Transform frog;
 
     // highest platform already placed in the scene
@@ -23,52 +23,56 @@ public class PlatformSpawner : MonoBehaviour
     [SerializeField] private float minimumVerticalGap = 1.2f;
     [SerializeField] private float maximumVerticalGap = 1.8f;
 
-    // limits how far left or right platforms can appear
+    // limits where platforms can appear horizontally
     [SerializeField] private float horizontalRange = 3.5f;
 
     // number of platforms kept ahead of the frog
     [SerializeField] private int platformsAhead = 6;
 
-    // stores platforms created by the spawner
-    private List<GameObject> spawnedPlatforms =
-    new List<GameObject>();
-
-    // how far below the camera a platform can remain
+    // distance below the camera where platforms are removed
     [SerializeField] private float cleanupDistance = 8f;
 
-    // height above the starting area where moving platforms begin
+    // height where moving platforms begin appearing
     [SerializeField] private float movingPlatformsStartHeight = 8f;
 
-    // optional prefab used for sinking lily pads
+    // optional prefab used to create sinking lily pads
     [SerializeField] private GameObject sinkingPlatformPrefab;
 
     // chance that a generated platform will sink
     [SerializeField, Range(0f, 1f)]
     private float sinkingPlatformChance = 0.2f;
 
-    // height above the starting area where sinking pads can appear
+    // height where sinking platforms begin appearing
     [SerializeField] private float sinkingPlatformsStartHeight = 8f;
 
+    // stores platforms currently created by the spawner
+    private readonly List<GameObject> spawnedPlatforms =
+        new List<GameObject>();
+
+    // highest platform location already checked
     private float highestSpawnedY;
 
+    // sets the starting height and creates platforms ahead
     private void Start()
     {
         highestSpawnedY = startingHeight;
-
         CreatePlatformsAhead();
     }
 
+    // creates new platforms and removes old ones
     private void Update()
     {
-        // add more platforms as the frog climbs
         CreatePlatformsAhead();
         RemoveOldPlatforms();
     }
 
+    // creates enough platforms ahead of the frog
     private void CreatePlatformsAhead()
     {
         float targetHeight =
-            frog.position.y + maximumVerticalGap * platformsAhead;
+            frog.position.y +
+            maximumVerticalGap *
+            platformsAhead;
 
         while (highestSpawnedY < targetHeight)
         {
@@ -76,6 +80,7 @@ public class PlatformSpawner : MonoBehaviour
         }
     }
 
+    // randomly creates a regular, moving, or sinking platform
     private void SpawnNextPlatform()
     {
         float verticalGap = Random.Range(
@@ -96,25 +101,32 @@ public class PlatformSpawner : MonoBehaviour
             0f
         );
 
-        GameObject prefabToSpawn = platformPrefab;
+        GameObject prefabToSpawn =
+            platformPrefab;
 
         bool canUseSinkingPlatforms =
-            highestSpawnedY >= startingHeight + sinkingPlatformsStartHeight;
+            highestSpawnedY >=
+            startingHeight +
+            sinkingPlatformsStartHeight;
 
         bool canUseMovingPlatforms =
-            highestSpawnedY >= startingHeight + movingPlatformsStartHeight;
+            highestSpawnedY >=
+            startingHeight +
+            movingPlatformsStartHeight;
 
         if (canUseSinkingPlatforms &&
             sinkingPlatformPrefab != null &&
             Random.value < sinkingPlatformChance)
         {
-            prefabToSpawn = sinkingPlatformPrefab;
+            prefabToSpawn =
+                sinkingPlatformPrefab;
         }
         else if (canUseMovingPlatforms &&
-            movingPlatformPrefab != null &&
-            Random.value < movingPlatformChance)
+                 movingPlatformPrefab != null &&
+                 Random.value < movingPlatformChance)
         {
-            prefabToSpawn = movingPlatformPrefab;
+            prefabToSpawn =
+                movingPlatformPrefab;
         }
 
         GameObject newPlatform = Instantiate(
@@ -126,17 +138,24 @@ public class PlatformSpawner : MonoBehaviour
         spawnedPlatforms.Add(newPlatform);
     }
 
-    // removes generated platforms that are far below the camera
-    private void RemoveOldPlatforms() {
-        float cutoffY = Camera.main.transform.position.y
-        - cleanupDistance;
+    // removes generated platforms below the camera
+    private void RemoveOldPlatforms()
+    {
+        float cutoffY =
+            Camera.main.transform.position.y -
+            cleanupDistance;
 
-        for (int i = spawnedPlatforms.Count - 1; i >= 0; i--) {
-            GameObject platform = spawnedPlatforms[i];
-            if (platform == null) {
+        for (int i = spawnedPlatforms.Count - 1; i >= 0; i--)
+        {
+            GameObject platform =
+                spawnedPlatforms[i];
+
+            if (platform == null)
+            {
                 spawnedPlatforms.RemoveAt(i);
             }
-            else if (platform.transform.position.y < cutoffY) {
+            else if (platform.transform.position.y < cutoffY)
+            {
                 Destroy(platform);
                 spawnedPlatforms.RemoveAt(i);
             }

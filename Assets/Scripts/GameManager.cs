@@ -3,26 +3,30 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    // the frog being watched for falling
+    // frog being watched for falling
     [SerializeField] private Transform frog;
 
-    // the message shown after the frog loses
+    // message shown after the player loses
     [SerializeField] private GameObject gameOverText;
 
-    // how far below the camera the frog can fall
+    // distance below the camera where the game ends
     [SerializeField] private float fallDistance = 6f;
 
+    // sound played when the game ends
     [SerializeField] private AudioClip gameOverSound;
 
     private bool gameOver;
     private AudioSource gameManagerAudioSource;
 
+    // sets up the game over screen and audio source
     private void Start()
     {
         gameOverText.SetActive(false);
-        gameManagerAudioSource = GetComponent<AudioSource>();
+        gameManagerAudioSource =
+            GetComponent<AudioSource>();
     }
 
+    // checks for falling and restart input
     private void Update()
     {
         if (gameOver)
@@ -37,39 +41,49 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // end the game when the frog falls below the camera
-        if (frog.position.y < Camera.main.transform.position.y - fallDistance)
+        // ends the game when the frog falls below the camera
+        if (frog.position.y <
+            Camera.main.transform.position.y -
+            fallDistance)
         {
             EndGame();
-            if (gameManagerAudioSource != null && gameOverSound != null) {
-                gameManagerAudioSource.PlayOneShot(gameOverSound);
-            }
+            PlayGameOverSound();
         }
     }
 
+    // stops the frog and displays the game over message
     private void EndGame()
     {
         gameOver = true;
 
-        Rigidbody2D frogBody = frog.GetComponent<Rigidbody2D>();
+        Rigidbody2D frogBody =
+            frog.GetComponent<Rigidbody2D>();
 
         if (frogBody != null)
         {
-            frogBody.linearVelocity = Vector2.zero;
+            frogBody.linearVelocity =
+                Vector2.zero;
         }
 
         frog.gameObject.SetActive(false);
         gameOverText.SetActive(true);
     }
 
-    public void TriggerHazardGameOver() {
+    // triggers game over when the frog touches a hazard
+    public void TriggerHazardGameOver()
+    {
         if (gameOver)
         {
-        return;
+            return;
         }
 
         EndGame();
+        PlayGameOverSound();
+    }
 
+    // plays the game over sound
+    private void PlayGameOverSound()
+    {
         if (gameManagerAudioSource != null &&
             gameOverSound != null)
         {

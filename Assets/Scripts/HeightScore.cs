@@ -3,12 +3,13 @@ using UnityEngine;
 
 public class HeightScore : MonoBehaviour
 {
-    // the frog whose height is tracked
+    // frog whose highest height is tracked
     [SerializeField] private Transform frog;
 
-    // UI text displaying the score
+    // text displaying the current score
     [SerializeField] private TMP_Text heightText;
 
+    // text displaying the saved high score
     [SerializeField] private TMP_Text bestScoreText;
 
     private float highestY;
@@ -16,21 +17,28 @@ public class HeightScore : MonoBehaviour
     private int flyPoints;
     private int bestScore;
 
-    private const string BestScoreKey = "FroggyHeightsBestScore";
+    // key used to save the high score
+    private const string BestScoreKey =
+        "FroggyHeightsBestScore";
 
+    // records the frog's starting height and loads the high score
     private void Start()
     {
         startingY = frog.position.y;
         highestY = startingY;
 
-        bestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
+        bestScore =
+            PlayerPrefs.GetInt(
+                BestScoreKey,
+                0
+            );
 
         UpdateScoreDisplay();
     }
 
+    // updates the height score when the frog climbs higher
     private void Update()
     {
-        // updates the height score when the frog reaches a new height
         if (frog.position.y > highestY)
         {
             highestY = frog.position.y;
@@ -45,14 +53,16 @@ public class HeightScore : MonoBehaviour
         UpdateScoreDisplay();
     }
 
-    // updates and saves the current best score
+    // updates the score display and saves the high score
     private void UpdateScoreDisplay()
     {
-        int heightScore = Mathf.FloorToInt(
-            (highestY - startingY) * 10f
-        );
+        int heightScore =
+            Mathf.FloorToInt(
+                (highestY - startingY) * 10f
+            );
 
-        int totalScore = heightScore + flyPoints;
+        int totalScore =
+            heightScore + flyPoints;
 
         if (totalScore > bestScore)
         {
@@ -71,6 +81,7 @@ public class HeightScore : MonoBehaviour
             "\nFlies: " + flyPoints +
             "\nScore: " + totalScore;
 
-        bestScoreText.text = "High Score: " + bestScore;
+        bestScoreText.text =
+            "High Score: " + bestScore;
     }
 }

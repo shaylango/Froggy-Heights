@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class FlyPickup : MonoBehaviour
 {
-    // points awarded when the frog collects this flyp
+    // points awarded when the frog collects this fly
     [SerializeField] private int pointValue = 10;
 
     // sound played when the fly is collected
@@ -14,21 +14,23 @@ public class FlyPickup : MonoBehaviour
     private AudioSource flyAudioSource;
     private bool collected;
 
+    // finds the fly's audio source
     private void Awake()
     {
-        flyAudioSource = GetComponent<AudioSource>();
+        flyAudioSource =
+            GetComponent<AudioSource>();
     }
 
+    // collects the fly when the frog touches it
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Touching the fly with the frog collects it.
         if (other.GetComponent<FrogController>() != null)
         {
             Collect();
         }
     }
 
-    // allows the frog's tongue to collect the fly from a distance
+    // allows the frog's tongue to collect the fly
     public void Collect()
     {
         if (collected)
@@ -38,16 +40,20 @@ public class FlyPickup : MonoBehaviour
 
         collected = true;
 
-        HeightScore score = FindAnyObjectByType<HeightScore>();
+        // adds the fly's points to the score
+        HeightScore score =
+            FindAnyObjectByType<HeightScore>();
 
         if (score != null)
         {
             score.AddPoints(pointValue);
         }
 
-        if (flyAudioSource != null && collectionSound != null)
+        if (flyAudioSource != null &&
+            collectionSound != null)
         {
-            Collider2D flyCollider = GetComponent<Collider2D>();
+            Collider2D flyCollider =
+                GetComponent<Collider2D>();
 
             if (flyCollider != null)
             {
@@ -67,7 +73,11 @@ public class FlyPickup : MonoBehaviour
                 collectionVolume
             );
 
-            Destroy(gameObject, collectionSound.length);
+            // keeps the object alive until the sound finishes
+            Destroy(
+                gameObject,
+                collectionSound.length
+            );
         }
         else
         {

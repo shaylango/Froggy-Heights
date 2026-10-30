@@ -7,47 +7,54 @@ public class FlySpawner : MonoBehaviour
     [SerializeField] private GameObject regularFlyPrefab;
     [SerializeField] private GameObject goldenFlyPrefab;
 
-    // the frog determines when new flies are needed
+    // frog used to determine when new flies are needed
     [SerializeField] private Transform frog;
 
-    // controls how far apart flies appear vertically
+    // controls the vertical distance between flies
     [SerializeField] private float minimumVerticalGap = 2.5f;
     [SerializeField] private float maximumVerticalGap = 4f;
 
-    // controls the horizontal spawn area
+    // limits where flies can spawn horizontally
     [SerializeField] private float horizontalRange = 6f;
 
-    // number of flies kept ahead of the frog
+    // number of possible fly locations kept ahead of the frog
     [SerializeField] private int fliesAhead = 5;
 
     // chance that a spawned fly is golden
     [SerializeField, Range(0f, 1f)]
     private float goldenFlyChance = 0.15f;
 
-    // removes flies that are far below the camera
+    // distance below the camera where flies are removed
     [SerializeField] private float cleanupDistance = 8f;
 
-    private List<GameObject> spawnedFlies =
+    // stores flies currently created by the spawner
+    private readonly List<GameObject> spawnedFlies =
         new List<GameObject>();
 
+    // highest possible fly location already checked
     private float highestSpawnedY;
 
+    // sets the starting height and creates flies ahead
     private void Start()
     {
         highestSpawnedY = -3.5f;
         CreateFliesAhead();
     }
 
+    // creates new flies and removes old ones
     private void Update()
     {
         CreateFliesAhead();
         RemoveOldFlies();
     }
 
+    // creates enough possible fly locations ahead of the frog
     private void CreateFliesAhead()
     {
         float targetHeight =
-            frog.position.y + maximumVerticalGap * fliesAhead;
+            frog.position.y +
+            maximumVerticalGap *
+            fliesAhead;
 
         while (highestSpawnedY < targetHeight)
         {
@@ -55,6 +62,7 @@ public class FlySpawner : MonoBehaviour
         }
     }
 
+    // randomly creates a regular or golden fly
     private void SpawnNextFly()
     {
         float verticalGap = Random.Range(
@@ -75,7 +83,8 @@ public class FlySpawner : MonoBehaviour
             0f
         );
 
-        GameObject prefabToSpawn = regularFlyPrefab;
+        GameObject prefabToSpawn =
+            regularFlyPrefab;
 
         if (goldenFlyPrefab != null &&
             Random.value < goldenFlyChance)
@@ -96,7 +105,8 @@ public class FlySpawner : MonoBehaviour
     private void RemoveOldFlies()
     {
         float cutoffY =
-            Camera.main.transform.position.y - cleanupDistance;
+            Camera.main.transform.position.y -
+            cleanupDistance;
 
         for (int i = spawnedFlies.Count - 1; i >= 0; i--)
         {

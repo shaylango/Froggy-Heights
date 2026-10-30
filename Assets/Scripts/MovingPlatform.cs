@@ -2,34 +2,41 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
-    // left and right movement limits.
+    // limits where the platform can move horizontally
     [SerializeField] private float leftLimit = -7f;
     [SerializeField] private float rightLimit = 7f;
 
-    // how quickly the platform moves
+    // controls how quickly the platform moves
     [SerializeField] private float moveSpeed = 1.5f;
 
+    // gives each platform different movement timing
     private float movementOffset;
+
+    // gives each platform a different starting direction
     private float movementDirection;
 
+    // sets a random movement offset and direction
     private void Start()
     {
-        // gives each platform a different starting point
         movementOffset = Random.Range(
             0f,
             rightLimit - leftLimit
         );
 
-        // gives each platform a random direction
-        movementDirection = Random.value < 0.5f ? -1f : 1f;
+        movementDirection =
+            Random.value < 0.5f
+                ? -1f
+                : 1f;
     }
 
+    // moves the platform between the horizontal limits
     private void Update()
     {
-        // creates independent movement for each platform
         float movementTime =
-            Time.time * moveSpeed * movementDirection
-            + movementOffset;
+            Time.time *
+            moveSpeed *
+            movementDirection +
+            movementOffset;
 
         float horizontalPosition =
             Mathf.PingPong(
