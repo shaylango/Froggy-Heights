@@ -1,0 +1,22 @@
+Froggy Heights
+Github Repository:
+https://github.com/shaylango/Froggy-Heights.git
+
+Changes from the One-Pager: 
+The main idea of Froggy Heights stayed the same. The player controls a frog that automatically jumps across lily pads while moving left and right to climb higher.
+
+Changes and additions:
+- Platforms are randomly generated instead of being completely hand-placed.
+- Moving lily pads were added with different movement directions.
+- Sinking lily pads were added. They sink after the frog lands on top of them.
+- Flies spawn randomly and can be collected by touching them or using the frog's tongue.
+- Golden flies were added for extra points.
+- Height points, fly points, total score, and a saved high score were added.
+- The tongue collects flies instead of attaching to special lily pads.
+- Fish hazards were added and spawn randomly at higher heights.
+- Ducks fly back and forth across the screen and spawn less often than fish.
+- The fish remain stationary while the ducks are moving hazards.
+- A pond background, custom lily pad artwork, animated frog, flies, fish, and ducks were added.
+- Jump, tongue, fly collection, sinking platform, fish, duck, and game-over sounds were added.
+- The game remains one endless level instead of using multiple designed stages.
+- An inventory system was not added because it did not fit the planned project scope.
