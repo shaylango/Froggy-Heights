@@ -176,8 +176,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 645426dfd75a548ecbf7ad771639d8fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishHazard
-  fishSound: {fileID: 8300000, guid: 4c1389f35ab364833b0ddc1be292c511, type: 3}
-  fishVolume: 0.5
+  fishSound: {fileID: 8300000, guid: 3a8f361b8c7d94d46aa03227426b0b5e, type: 3}
+  fishVolume: 0.35
 --- !u!82 &-1158616059339996531
 AudioSource:
   m_ObjectHideFlags: 0
